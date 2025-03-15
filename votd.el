@@ -9,6 +9,15 @@
 (require 'url)
 (require 'json)
 
+(defgroup votd nil
+  "Package that fetches the Bible verse of the day from the BibleGateway"
+  :group 'external)
+
+(defcustom votd-bible-version "KJV"
+  "The version of the Bible to get from"
+  :type 'string
+  :group 'votd)
+
 (defun split-with-spaces (str)
   "Split STR preserving original spacing between words."
   (let ((parts nil)
@@ -88,7 +97,7 @@
 (defun fetch-daily-bible-verse ()
   "Fetch the daily Bible verse from BibleGateway API."
   (let ((url-request-method "GET")
-        (url "https://www.biblegateway.com/votd/get/?format=json&version=KJV"))
+        (url (concat "https://www.biblegateway.com/votd/get/?format=json&version=" votd-bible-version )))
     (with-current-buffer (url-retrieve-synchronously url t t)
       (goto-char url-http-end-of-headers)
       (let* ((json-string (buffer-substring-no-properties (point) (point-max)))
